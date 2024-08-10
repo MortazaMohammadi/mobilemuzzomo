@@ -1,0 +1,108 @@
+
+class UserAddressSerializer(serializers.ModelSerializer):
+    address = AddressSerializer()
+    class  Meta:
+       model = User
+       fields=['address']
+    def update(self, instance, validated_data):
+        address_data = validated_data.pop('address')
+        try:
+            address_instance = Address.objects.filter(street = address_data.get('street'), city = address_data.get('city')).first()
+        except Address.DoesNotExist:
+            city_name = address_data.get('city')
+            city_instance = City.objects.get(name=city_name)
+            address_instance = Address.objects.create(
+                street=address_data.get('street'),
+                city=city_instance
+            )
+            instance.phone = validated_data.get('phone')
+            instance.address = address_instance
+            instance.save()
+            
+            return instance
+
+
+
+
+# USER SERIALIZER---------------------------->
+class UserSerializer(serializers.ModelSerializer):
+    email = serializers.CharField(max_length = 255)
+    class Meta:
+        model = User
+        fields = ['id','email', 'first_name', 'last_name','is_verified']
+        
+
+
+# update
+
+
+class ProviderSerializer(serializers.ModelSerializer):
+    admin = UserSerializer()
+    address = AddressSerializer()
+    
+    class Meta:
+        model = Provider
+        fields = [ 'phone','address', 'admin']
+    
+    
+    
+    def update(self, instance, validated_data):
+        admin_data = validated_data.pop('admin')
+        admin_instance = instance.admin
+        admin_instance.first_name = admin_data.get('first_name')
+        admin_instance.last_name = admin_data.get('last_name')
+        admin_instance.save()
+
+        address_data = validated_data.pop('address')
+
+        try:
+            address_instance = Address.objects.filter(street=address_data.get('street')).first()
+        except Address.DoesNotExist:
+            city_name = address_data.get('city')
+            city_instance = City.objects.get(name=city_name)
+            address_instance = Address.objects.create(street=address_data.get('street'), city=city_instance)
+
+        instance.phone = validated_data.get('phone')
+        instance.address = address_instance
+        instance.save()
+
+        return instance
+    
+
+
+
+
+             
+# PROFESSIONAL SERIALIZER----------------------------->
+class ProfessionalSerializer(serializers.ModelSerializer):
+    admin = UserSerializer()
+    address = AddressSerializer()
+    Service
+    class Meta:
+         model = Professional
+         fields = ["id",'license_number','insurance_number', 'phone', 'admin', 'address' ]
+         
+         
+    def update(self, instance, validate_data):
+        admin_data = validate_data.pop('admin')
+        admin_instance = instance.admin
+        admin_instance.first_name = admin_data.get('first_name')
+        admin_instance.last_name = admin_data.get('last_name')
+        admin_instance.save()
+        
+        address_data = validate_data.pop('address')
+        
+        try:
+            address_instance = Address.objects.filter(street = address_data.get('street'), city = address_data.get('city')).first()
+        except Address.DoesNotExist:
+            city_name  = address_data.get('city')
+            city_instance = City.objects.get(name = city_name)
+            address_instance = Address.objects.create(street = address_data.get('street'), city = city_instance)
+ 
+        instance.phone = validate_data.get('phone')
+        instance.address = address_instance  
+        instance.license_number = validate_data.get('license_number')
+        instance.insurance_number = validate_data.get('insurance_number')    
+        instance.save()
+        
+        return instance
