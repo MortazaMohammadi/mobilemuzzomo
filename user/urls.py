@@ -1,5 +1,8 @@
 from django.contrib import admin
 from django.urls import path
+from rest_framework_simplejwt.views import TokenBlacklistView
+
+
 from .views import *
 
 urlpatterns = [
@@ -19,12 +22,9 @@ urlpatterns = [
     path('professional/', ProfessionalListCreateView.as_view(), name='professional-list-create'),
     path('professional-detial/', ProfessionalDetailView.as_view(), name='professional-detail'),
     path('professional-services/', ProfessionalServiceListCreateView.as_view(), name='professional-service-list-create'),
-    # path('professional-dashboard-detail/<int:pk>/' , ProfessionalDashboardDetailView.as_view() , name='professional-dashboard-detail'),
-    # path('user-update/<int:pk>/' , CustomUserUpdateView.as_view() , name='user-update'),
-    # path('professionals/<int:admin__pk>/update-address/', ProfessionalUpdateAddressView.as_view(), name='update-address'),
-    # -------------------------------------- professional and provider -----------------------------
-    # path('professionalView/<int:pk>/', ProfessionalView.as_view(), name='professionalView'),
-    # -------------------------------------- professional and provider -----------------------------
+    path('someprofessional/', SomeProfessionalView.as_view(), name='professional-view'),
+    path('user-detial/', UserProfileDetailView.as_view(), name='user-detail'),
+     path('logout/', TokenBlacklistView.as_view(), name='token_blacklist'),
     
    
 ]

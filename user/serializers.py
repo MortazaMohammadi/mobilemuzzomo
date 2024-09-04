@@ -78,6 +78,8 @@ class LoginSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
         email = attrs.get('email')
         password = attrs.get('password')
+        print(email)
+        print(password)
         request=self.context.get('request')
         user = authenticate(request, email = email, password = password)
         if not user:
@@ -92,7 +94,37 @@ class LoginSerializer(serializers.ModelSerializer):
             'access_token' : str(user_tokens.get('access')),
             'refresh_token':str(user_tokens.get('refresh'))
         }
+
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'first_name', 'last_name', 'email', 'profile_image','last_login']
+
+    profile_image = serializers.SerializerMethodField()
+
+    def get_profile_image(self, obj):
+        if obj.profile_image:
+            return obj.profile_image.url
+        return None
+    
+    
+class UserPhoneSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['phone']
+
+    def update(self, instance, validated_data):
+        # Get the new phone number
+        phone = validated_data.get('phone', None)
         
+        if phone:
+            # Update the phone field
+            instance.phone = phone
+            instance.save()
+        
+        return instance
+
 # RESET PASSWORD SERIALIZER---------------------------------> 
 class PasswordResetRequestSerializer(serializers.Serializer):
     email = serializers.EmailField(max_length=255)
@@ -311,3 +343,41 @@ class ProfessionalServiceSerializer(serializers.ModelSerializer):
         # Set the professional field to the current user
         validated_data['professional'] = self.context['request'].user.professional
         return super().update(instance, validated_data)
+    
+
+    # profile view
+
+
+class CountrySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Country
+        fields = ['id', 'name', 'code']
+
+class ProvinceSerializer(serializers.ModelSerializer):
+    country = CountrySerializer(read_only=True)
+
+    class Meta:
+        model = Province
+        fields = ['id', 'name', 'code', 'country']
+
+class CitySerializer(serializers.ModelSerializer):
+    province = ProvinceSerializer(read_only=True)
+
+    class Meta:
+        model = City
+        fields = ['id', 'name', 'province']
+
+class AddressSerializer(serializers.ModelSerializer):
+    city = CitySerializer(read_only=True)
+
+    class Meta:
+        model = Address
+        fields = ['id', 'street', 'unit_suite', 'city']
+
+class UserProfileSerializer(serializers.ModelSerializer):
+    user = UserSerializer(read_only=True)
+    address = AddressSerializer(read_only=True, required=False)
+
+    class Meta:
+        model = UserAddress
+        fields = ['user', 'address']
