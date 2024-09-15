@@ -102,11 +102,11 @@ class Professional(models.Model):
     
 # PROFESSIONAL SERVICES MODEL--------------------------------->
 class ProfessionalService(models.Model):
-    serviceCatagory = models.ForeignKey(ServiceCatagory, on_delete = models.SET_NULL, null = True )
+ 
     serivce = models.ForeignKey(Service, on_delete = models.SET_NULL, null = True)
     professional = models.ForeignKey(Professional, on_delete = models.CASCADE, null = True)
     class Meta:
-        unique_together = ('serviceCatagory', 'serivce', 'professional')
+        unique_together = ('serivce', 'professional')
 
 # EMAIL UPDATE CODE-------------------------------->
 
