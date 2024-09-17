@@ -46,3 +46,4 @@ class ProfessionalCompletedJobListView(generics.ListAPIView):
   def get_queryset(self):
     user_id = self.kwargs['user_id']
     return Job.objects.filter(professional__id = user_id , is_active = False)
+class CreateJobCreateUpdateView(generics.ListCreateAPIView):

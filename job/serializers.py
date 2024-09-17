@@ -20,3 +20,21 @@ class ProfessionalJobSerializer(serializers.ModelSerializer):
               'flexable' , 'is_active' ,'service' , 'professional' , 
               'provider' , 'address']
 
+class CreateJobSerializer(serializers.ModelSerializer):
+    class Meta:
+      
+        model = Job
+        fields = ['id' , 'submit_date' , 'start_date' , 'complete_date' , 
+              'flexable' , 'is_active' ,'service' , 'professional' , 
+              'provider' , 'address']
+
+
+    def create(self, validated_data):
+        # Automatically set 'is_done' to False
+        validated_data['is_avialable'] = True
+        validated_data['provider'] = self.context['request'].user
+        # If the job is flexible, set start_date to null, is_avialable to True, is_active to False
+        flexable = validated_data.get('flexable', False)
+        if flexable:
+            validated_data['start_date'] = None
+        return super(JobSerializer, self).create(validated_data)
