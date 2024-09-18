@@ -29,13 +29,18 @@ class CitySerializer(serializers.ModelSerializer):
     model = City
     fields = ['id' , 'name' , 'province']
 class AddressSerializer(serializers.ModelSerializer):
-  city = serializers.PrimaryKeyRelatedField(queryset=City.objects.all())
-  class Meta:
-    model = Address
-    fields = ['id' , 'street','unit_suite' , 'city']
+    city = CitySerializer(read_only=True)
 
-# --------------------------------------------------------------------------------------------------------------------------------
+    class Meta:
+        model = Address
+        fields = ['id', 'street', 'unit_suite', 'city']
 
+    # Overriding to accept writable city ID
+    def to_internal_value(self, data):
+        city_id = data.get('city')
+        validated_data = super().to_internal_value(data)
+        validated_data['city_id'] = city_id
+        return validated_data
 
 # USER REGISTERATION SERIALIZER--------------------------------->
 class UserRegisterSerializer(serializers.ModelSerializer):
@@ -367,12 +372,6 @@ class CitySerializer(serializers.ModelSerializer):
         model = City
         fields = ['id', 'name', 'province']
 
-class AddressSerializer(serializers.ModelSerializer):
-    city = CitySerializer(read_only=True)
-
-    class Meta:
-        model = Address
-        fields = ['id', 'street', 'unit_suite', 'city']
 
 class UserProfileSerializer(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)

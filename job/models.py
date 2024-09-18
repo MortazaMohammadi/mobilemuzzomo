@@ -13,7 +13,6 @@ class Job(models.Model):
     address = models.ForeignKey(Address, on_delete = models.CASCADE)
     provider = models.ForeignKey(User, on_delete = models.CASCADE)
     service = models.ForeignKey(Service, on_delete = models.CASCADE)
-    service_catagory = models.ForeignKey(ServiceCatagory, on_delete = models.CASCADE)
     def __str__(self):
         return str(self.service)+ ' for '+ str(self.provider)
     
