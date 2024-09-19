@@ -11,7 +11,7 @@ from rest_framework.generics import GenericAPIView, UpdateAPIView,RetrieveAPIVie
 from user.utils import send_code_to_user
 from rest_framework.response import Response
 from rest_framework import status , generics
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated,IsAuthenticatedOrReadOnly
 from .utils import OneTimePassword
 from django.utils.http import urlsafe_base64_decode
 from django.utils.encoding import smart_str, DjangoUnicodeDecodeError
