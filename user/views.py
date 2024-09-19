@@ -20,7 +20,15 @@ from django.contrib.auth import get_user_model
 from rest_framework.exceptions import ValidationError
 
 User = get_user_model()
-# Create your views here.
+
+class CityCreateListView(generics.ListCreateAPIView):
+    queryset = City.objects.all()
+    serializer_class = CitySerializer
+
+class AddressCreateListView(generics.ListCreateAPIView):
+    queryset = Address.objects.all()
+    serializer_class = AddressSerializer
+
 
 class RegisterUserView(GenericAPIView):
     serializer_class = UserRegisterSerializer

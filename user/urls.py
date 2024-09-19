@@ -24,7 +24,9 @@ urlpatterns = [
     path('professional-services/', ProfessionalServiceListCreateView.as_view(), name='professional-service-list-create'),
     path('someprofessional/', SomeProfessionalView.as_view(), name='professional-view'),
     path('user-detial/', UserProfileDetailView.as_view(), name='user-detail'),
-     path('logout/', TokenBlacklistView.as_view(), name='token_blacklist'),
+    path('logout/', TokenBlacklistView.as_view(), name='token_blacklist'),
+    path('addresses/', AddressCreateListView.as_view(), name='address-create-list'),
+    path('cities/', CityCreateListView.as_view(), name='city-create-list'),
+]
     
    
-]

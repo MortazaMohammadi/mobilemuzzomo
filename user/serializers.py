@@ -16,23 +16,41 @@ from .utils import generateOtp, send_normal_email
 from django.contrib.auth.password_validation import validate_password
 
 # ADDRESS SERIALIZER--------------------------------->
-class CountrySerializer(serializers.ModelSerializer):
-  class Meta:
-    model = Country
-    fields = ['id' , 'name']
+
+# Serializer for Province
 class ProvinceSerializer(serializers.ModelSerializer):
-  class Meta:
-    model = Province
-    fields = ['id' , 'name' , 'country']
+    class Meta:
+        model = Province
+        fields = ['name', 'code']
+
+# Serializer for City with province code as prefix
 class CitySerializer(serializers.ModelSerializer):
-  class Meta:
-    model = City
-    fields = ['id' , 'name' , 'province']
+    province_code = serializers.CharField(source='province.code', read_only=True)
+
+    class Meta:
+        model = City
+        fields = ['name', 'province_code']
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        # Customize the output to be "CityName, ProvinceCode" (e.g., "Toronto, ON")
+        representation['city_with_province'] = f"{representation['name']}, {representation['province_code']}"
+        return representation
+
+# Serializer for Address with full address representation
 class AddressSerializer(serializers.ModelSerializer):
-  city = serializers.PrimaryKeyRelatedField(queryset=City.objects.all())
-  class Meta:
-    model = Address
-    fields = ['id' , 'street','unit_suite' , 'city']
+    city_name = serializers.CharField(source='city.name', read_only=True)
+    province_code = serializers.CharField(source='city.province.code', read_only=True)
+
+    class Meta:
+        model = Address
+        fields = ['unit_suite', 'street', 'city_name', 'province_code']
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        # Customize the output to be "unit, street, city, province code" (e.g., "Unit 3, 123 Main St, Toronto, ON")
+        representation['full_address'] = f"{representation['unit_suite']}, {representation['street']}, {representation['city_name']}, {representation['province_code']}"
+        return representation
 
 # --------------------------------------------------------------------------------------------------------------------------------
 
