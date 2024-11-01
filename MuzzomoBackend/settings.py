@@ -130,9 +130,17 @@ MEDIA_URL = '/media/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'user.User'
-EMAIL_HOST = 'sandbox.smtp.mailtrap.io'
-EMAIL_HOST_USER=env('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD=env('EMAIL_HOST_PASSWORD')
-DEFAULT_FROM_EMAIL = 'mortazamohammadi800@gmail.com'
-EMAIL_PORT = '2525'
-EMAIL_USE_TLS=True
+# EMAIL_HOST = 'sandbox.smtp.mailtrap.io'
+# EMAIL_HOST_USER=env('EMAIL_HOST_USER')
+# EMAIL_HOST_PASSWORD=env('EMAIL_HOST_PASSWORD')
+# DEFAULT_FROM_EMAIL = 'mortazamohammadi800@gmail.com'
+# EMAIL_PORT = '2525'
+# EMAIL_USE_TLS=True
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587  # Use 465 if SSL is required
+EMAIL_USE_TLS = True  # Use SSL instead: EMAIL_USE_SSL = True for port 465
+EMAIL_USE_SSL = False
+EMAIL_HOST_USER = 'mortazamohammadi800@gmail.com'
+EMAIL_HOST_PASSWORD = 'euqh luvd vjyq cvqi'  # Use the App Password if 2FA is enabled
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
